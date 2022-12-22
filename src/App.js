@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react"
+import { WordCard } from "./components/WordCard"
+import words from "./dictionary_json/dictionary.json"
+import "./App.css"
 
-function App() {
+const App = () => {
+  const [dwords, setDwords] = useState(words)
+  const [query, setQuery] = useState("")
+
+  const onQueryChange = (e) => {
+    console.log(e.target.value)
+    setQuery(e.target.value)
+  }
+
+  const matchWord = (word) => {
+    return word.word.toLowerCase().includes(query.toLowerCase())
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <input
+        className='searchbar'
+        placeholder='Search word'
+        onChange={(event) => onQueryChange(event)}
+      />
+      <div className='container'>
+        {dwords &&
+          dwords
+            .filter(matchWord)
+            .slice(0, 10)
+            .map((word, idx) => (
+              <WordCard
+                key={idx}
+                word={word.word}
+                definitions={word.definitions}
+              />
+            ))}
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
